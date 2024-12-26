@@ -22,11 +22,11 @@ from tqdm import tqdm
 
 app = Flask(__name__)
 
-project_path = f"models\\"
-processed_graph_path = f"{project_path}processed_graph.graphml"
-model_checkpoint = f"{project_path}ML_RandomForest_model.pkl"
-node2vec_full_model_checkpoint_path = f"{project_path}node2vec_full_model.pkl"
-nodes_features_checkpoint_path = f"{project_path}nodes_features.pkl"
+project_path = os.path.join("models")
+processed_graph_path = os.path.join(project_path, "processed_graph.graphml")
+model_checkpoint = os.path.join(project_path, "ML_RandomForest_model.pkl")
+node2vec_full_model_checkpoint_path = os.path.join(project_path, "node2vec_full_model.pkl")
+nodes_features_checkpoint_path = os.path.join(project_path, "nodes_features.pkl")
 
 # API: Login
 @app.route('/login', methods=['POST'])

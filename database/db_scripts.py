@@ -1,6 +1,7 @@
 import sqlite3
+import os
 
-DB_NAME = f'C://Users//Innotech_mobile13//Documents//Huit//social_network//python-flask-sqlite//database//database.db'
+DB_NAME = os.path.join('database', 'database.db')
 
 def connect_to_db():
     try:

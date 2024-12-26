@@ -8,7 +8,8 @@ from unidecode import unidecode
 from faker import Faker
 from db_scripts import connect_to_db
 
-csv_file_path = f'C://Users//Innotech_mobile13//Documents//Huit//social_network//python-flask-sqlite//models//potential_links.csv'
+csv_file_path = os.path.join('models', 'potential_links.csv')
+
 conn = connect_to_db()
 locales = ["vi_VN", "en_US", "fr_FR", "es_ES", "de_DE"]
 
