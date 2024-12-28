@@ -327,24 +327,53 @@ with open(nodes_features_checkpoint_path, 'rb') as f:
 
 @app.route('/recommend', methods=['GET'])
 def recommend():
-    # Lấy input_node từ query parameters
     input_node = request.args.get('input_node')
-    top_k = int(request.args.get('top_k', 10))  # Số lượng liên kết cần gợi ý (mặc định 10)
+    top_k = int(request.args.get('top_k', 10))
 
     if not input_node:
         return jsonify({"error": "input_node is required"}), 400
 
     try:
-        # Gọi hàm gợi ý để nhận các liên kết tiềm năng
+        # Gợi ý các liên kết tiềm năng và điểm số
         recommendations, scores = recommend_links_for_node(input_node, G, clf, node2vec_model, nodes_features, top_k)
 
-        # Trả về kết quả dưới dạng JSON
+        # Kết nối đến cơ sở dữ liệu
+        conn = connect_to_db()
+        if not conn:
+            return jsonify({"error": "Failed to connect to database"}), 500
+
         response = []
         for link, score in zip(recommendations, scores):
-            response.append({
-                'link': link,
-                'score': score
-            })
+            user_id = link[0]
+            user_id_predict = link[1]
+
+            cursor = conn.execute(
+                """
+                SELECT 
+                    u.id, u.username, u.avatar, u.display_name,
+                    (SELECT COUNT(*) FROM user_followers WHERE user_id = u.id) AS followers,
+                    (SELECT COUNT(*) FROM user_followers WHERE follower_id = u.id) AS following
+                FROM user u WHERE u.id = ?
+                """,
+                (user_id_predict,)
+            )
+            user_predict = cursor.fetchone()
+
+            if user_predict:
+                response.append({
+                    'user_id': user_id,
+                    'user_predict': {
+                        "id": user_predict[0],
+                        "username": user_predict[1],
+                        "avatar": user_predict[2],
+                        "display_name": user_predict[3],
+                        "followers": user_predict[4],
+                        "following": user_predict[5]
+                    },
+                    'score': score
+                })
+
+        conn.close()
 
         return jsonify(response)
 
