@@ -47,7 +47,7 @@ def login():
             return jsonify({"status": "fail", "message": "Failed to connect to database"}), 500
 
         cursor = conn.execute(
-            "SELECT id, username, display_name FROM user WHERE username = ? AND password = ?",
+            "SELECT id, username, display_name, avatar FROM user WHERE username = ? AND password = ?",
             (username, password)
         )
         user = cursor.fetchone()
@@ -59,7 +59,8 @@ def login():
                 "user": {
                     "id": user[0],
                     "username": user[1],
-                    "display_name": user[2]
+                    "display_name": user[2],
+                    "avatar": user[3],
                 }
             })
         else:
