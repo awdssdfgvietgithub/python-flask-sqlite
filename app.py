@@ -336,6 +336,7 @@ def recommend():
     try:
         # Gợi ý các liên kết tiềm năng và điểm số
         recommendations, scores = recommend_links_for_node(input_node, G, clf, node2vec_model, nodes_features, top_k)
+        print(recommendations)
 
         # Kết nối đến cơ sở dữ liệu
         conn = connect_to_db()
@@ -367,7 +368,7 @@ def recommend():
                         "username": user_predict[1],
                         "avatar": user_predict[2],
                         "display_name": user_predict[3],
-                        "followers": user_predict[4],
+                        "followers": user_predict[4],   
                         "following": user_predict[5]
                     },
                     'score': score

@@ -8,7 +8,7 @@ from unidecode import unidecode
 from faker import Faker
 from db_scripts import connect_to_db
 
-csv_file_path = os.path.join('models', 'potential_links.csv')
+csv_file_path = os.path.join('models', 'facebook_combined.csv')
 
 conn = connect_to_db()
 locales = ["vi_VN", "en_US", "fr_FR", "es_ES", "de_DE"]
@@ -57,10 +57,11 @@ def insert_users(conn, user_ids):
                 (user_id, username, "nostudyhaveparty", display_name, normal_display_name, avatar_base64)
             )
 
-        except sqlite3.IntegrityError:
+        except sqlite3.IntegrityError as e:
+            print(f"Error sqlite3 processing user {user_id}: {e}")
             pass
         except Exception as e:
-            print(f"Error processing user {user_id}: {e}")
+            print(f"Error Exception processing user {user_id}: {e}")
 
     conn.commit()
     print("Inserted users with avatars into the table successfully!")
